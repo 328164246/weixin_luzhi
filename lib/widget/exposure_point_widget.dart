@@ -8,9 +8,9 @@ import 'builder/tween_animation_builder_2.dart';
 
 class ExposurePointWidget extends StatelessWidget {
   const ExposurePointWidget({
-    Key? key,
-    required this.size,
-    required this.color,
+    Key key,
+     this.size,
+     this.color,
   }) : super(key: key);
 
   final double size;
@@ -43,8 +43,8 @@ class ExposurePointWidget extends StatelessWidget {
 /// 包含了四条弧及一个圆的曝光点绘制
 class ExposurePointPainter extends CustomPainter {
   const ExposurePointPainter({
-    required this.size,
-    required this.color,
+     this.size,
+     this.color,
     this.radius = 2,
     this.strokeWidth = 2,
   }) : assert(size > 0);

@@ -44,11 +44,11 @@ typedef EntitySaveCallback = FutureOr<dynamic> Function({
 
 class CameraPickerViewer extends StatefulWidget {
   const CameraPickerViewer({
-    Key? key,
-    required this.pickerState,
-    required this.pickerType,
-    required this.previewXFile,
-    required this.theme,
+    Key key,
+     this.pickerState,
+     this.pickerType,
+     this.previewXFile,
+     this.theme,
     this.shouldDeletePreviewFile = false,
     this.onEntitySaving,
   }) : super(key: key);
@@ -74,21 +74,21 @@ class CameraPickerViewer extends StatefulWidget {
   final bool shouldDeletePreviewFile;
 
   /// {@macro wechat_camera_picker.SaveEntityCallback}
-  final EntitySaveCallback? onEntitySaving;
+  final EntitySaveCallback onEntitySaving;
 
   /// Static method to push with the navigator.
   /// 跳转至选择预览的静态方法
-  static Future<AssetEntity?> pushToViewer(
+  static Future<AssetEntity> pushToViewer(
     BuildContext context, {
-    required CameraPickerState pickerState,
-    required CameraPickerViewType pickerType,
-    required XFile previewXFile,
-    required ThemeData theme,
+     CameraPickerState pickerState,
+     CameraPickerViewType pickerType,
+     XFile previewXFile,
+     ThemeData theme,
     bool shouldDeletePreviewFile = false,
-    EntitySaveCallback? onEntitySaving,
+    EntitySaveCallback onEntitySaving,
   }) {
-    return Navigator.of(context).push<AssetEntity?>(
-      PageRouteBuilder<AssetEntity?>(
+    return Navigator.of(context).push<AssetEntity>(
+      PageRouteBuilder<AssetEntity>(
         pageBuilder: (_, __, ___) => CameraPickerViewer(
           pickerState: pickerState,
           pickerType: pickerType,
@@ -114,14 +114,7 @@ class CameraPickerViewer extends StatefulWidget {
 }
 
 class _CameraPickerViewerState extends State<CameraPickerViewer> {
-  /// Controller for the video player.
-  /// 视频播放的控制器
-  late final VideoPlayerController videoController =
-      VideoPlayerController.file(previewFile);
 
-  /// Whether the controller has initialized.
-  /// 控制器是否已初始化
-  late bool hasLoaded = pickerType == CameraPickerViewType.image;
 
   /// Whether there's any error when initialize the video controller.
   /// 初始化视频控制器时是否发生错误
@@ -139,19 +132,36 @@ class _CameraPickerViewerState extends State<CameraPickerViewer> {
 
   CameraPickerViewType get pickerType => widget.pickerType;
 
-  XFile get previewXFile => widget.previewXFile;
 
-  /// Construct an [File] instance through [previewXFile].
-  /// 通过 [previewXFile] 构建 [File] 实例。
-  File get previewFile => File(previewXFile.path);
 
   ThemeData get theme => widget.theme;
 
   bool get shouldDeletePreviewFile => widget.shouldDeletePreviewFile;
-
+  XFile  previewXFile;
+  File  previewFile;
+  VideoPlayerController videoController;
+  bool hasLoaded;
   @override
   void initState() {
     super.initState();
+    setState(() {
+      previewXFile=widget.previewXFile;
+    });
+    setState(() {
+      previewFile=File(previewXFile.path);
+    });
+     videoController =
+    VideoPlayerController.file(previewFile);
+    /// Construct an [File] instance through [previewXFile].
+    /// 通过 [previewXFile] 构建 [File] 实例。
+
+    /// Controller for the video player.
+    /// 视频播放的控制器
+
+
+    /// Whether the controller has initialized.
+    /// 控制器是否已初始化
+     hasLoaded = pickerType == CameraPickerViewType.image;
     if (pickerType == CameraPickerViewType.video) {
       initializeVideoPlayerController();
     }
@@ -219,14 +229,14 @@ class _CameraPickerViewerState extends State<CameraPickerViewer> {
   /// because the parent picker will ignore it.
   Future<void> createAssetEntityAndPop() async {
     if (widget.onEntitySaving != null) {
-      await widget.onEntitySaving!(
+      await widget.onEntitySaving(
         context: context,
         viewType: pickerType,
         file: previewFile,
       );
       return;
     }
-    Future<AssetEntity?> saveFuture;
+    Future<AssetEntity> saveFuture;
 
     switch (pickerType) {
       case CameraPickerViewType.image:
@@ -244,7 +254,7 @@ class _CameraPickerViewerState extends State<CameraPickerViewer> {
         break;
     }
 
-    AssetEntity? entity;
+    AssetEntity entity;
     try {
       entity = await saveFuture;
       if (shouldDeletePreviewFile && previewFile.existsSync()) {
@@ -317,7 +327,7 @@ class _CameraPickerViewerState extends State<CameraPickerViewer> {
   Widget get playControlButton {
     return ValueListenableBuilder<bool>(
       valueListenable: isPlaying,
-      builder: (_, bool value, Widget? child) => GestureDetector(
+      builder: (_, bool value, Widget child) => GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: value ? playButtonCallback : null,
         child: Center(

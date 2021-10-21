@@ -8,15 +8,15 @@
 abstract class CameraPickerTextDelegate {
   /// Confirm string for the confirm button.
   /// 确认按钮的字段
-  late String confirm;
+   String confirm;
 
   /// Tips string above the shooting button before shooting.
   /// 拍摄前确认按钮上方的提示文字
-  late String shootingTips;
+   String shootingTips;
 
   /// Load failed string for item.
   /// 资源加载失败时的字段
-  late final String loadFailed;
+   final String loadFailed="";
 }
 
 /// Default text delegate implements with Chinese.

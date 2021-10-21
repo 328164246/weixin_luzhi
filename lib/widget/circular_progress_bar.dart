@@ -11,9 +11,9 @@ import '../constants/colors.dart';
 
 class CircleProgressBar extends StatefulWidget {
   const CircleProgressBar({
-    Key? key,
-    required this.outerRadius,
-    required this.ringsWidth,
+    Key key,
+     this.outerRadius,
+     this.ringsWidth,
     this.ringsColor = C.themeColor,
     this.progress = 0.0,
     this.duration = const Duration(seconds: 15),
@@ -33,14 +33,20 @@ class CircleProgressState extends State<CircleProgressBar>
     with SingleTickerProviderStateMixin {
   final GlobalKey paintKey = GlobalKey();
 
-  late final AnimationController progressController = AnimationController(
-    duration: widget.duration,
-    vsync: this,
-  )..value = widget.progress;
-
+   AnimationController progressController;
+Duration duration;
+  double progress;
   @override
   void initState() {
     super.initState();
+    setState(() {
+      duration=widget.duration;
+      progress=widget.progress;
+    });
+     progressController = AnimationController(
+      duration: widget.duration,
+      vsync: this,
+    )..value = widget.progress;
     SchedulerBinding.instance?.addPostFrameCallback((Duration _) {
       progressController.forward();
     });
@@ -74,9 +80,9 @@ class CircleProgressState extends State<CircleProgressBar>
 
 class ProgressPainter extends CustomPainter {
   const ProgressPainter({
-    required this.ringsWidth,
-    required this.ringsColor,
-    required this.progress,
+     this.ringsWidth,
+     this.ringsColor,
+     this.progress,
   });
 
   final double ringsWidth;

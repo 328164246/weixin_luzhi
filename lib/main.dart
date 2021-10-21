@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, this.title=""}) : super(key: key);
+  MyHomePage({Key key, this.title=""}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -51,13 +51,13 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  AssetEntity? entity;
-  Uint8List? data;
+  AssetEntity entity;
+  Uint8List data;
   //拍摄
   Future<void> pick(BuildContext context) async {
     final Size size = MediaQuery.of(context).size;
     final double scale = MediaQuery.of(context).devicePixelRatio;
-    final AssetEntity? _entity = await CameraPicker.pickFromCamera(
+    final AssetEntity _entity = await CameraPicker.pickFromCamera(
 
       context,
       enableRecording: true,

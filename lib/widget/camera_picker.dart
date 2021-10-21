@@ -32,7 +32,7 @@ const Duration _kRouteDuration = Duration(milliseconds: 300);
 /// 该选择器可以通过拍照创建 [AssetEntity]。
 class CameraPicker extends StatefulWidget {
   CameraPicker({
-    Key? key,
+    Key key,
     this.enableRecording = false,
     this.onlyEnableRecording = false,
     this.enableAudio = true,
@@ -48,7 +48,7 @@ class CameraPicker extends StatefulWidget {
     this.cameraQuarterTurns = 0,
     this.foregroundBuilder,
     this.onEntitySaving,
-    CameraPickerTextDelegate? textDelegate,
+    CameraPickerTextDelegate textDelegate,
   })  : assert(
           enableRecording == true || onlyEnableRecording != true,
           'Recording mode error.',
@@ -101,11 +101,11 @@ class CameraPicker extends StatefulWidget {
   ///
   /// Defaults to 15 seconds, allow `null` for unrestricted video recording.
   /// 默认为 15 秒，可以使用 `null` 来设置无限制的视频录制
-  final Duration? maximumRecordingDuration;
+  final Duration maximumRecordingDuration;
 
   /// Theme data for the picker.
   /// 选择器的主题
-  final ThemeData? theme;
+  final ThemeData theme;
 
   /// Present resolution for the camera.
   /// 相机的分辨率预设
@@ -117,14 +117,14 @@ class CameraPicker extends StatefulWidget {
 
   /// The foreground widget builder which will cover the whole camera preview.
   /// 覆盖在相机预览上方的前景构建
-  final Widget Function(CameraValue)? foregroundBuilder;
+  final Widget Function(CameraValue) foregroundBuilder;
 
   /// {@macro wechat_camera_picker.SaveEntityCallback}
-  final EntitySaveCallback? onEntitySaving;
+  final EntitySaveCallback onEntitySaving;
 
   /// Static method to create [AssetEntity] through camera.
   /// 通过相机创建 [AssetEntity] 的静态方法
-  static Future<AssetEntity?> pickFromCamera(
+  static Future<AssetEntity> pickFromCamera(
     BuildContext context, {
     bool enableRecording = false,
     bool onlyEnableRecording = false,
@@ -135,13 +135,13 @@ class CameraPicker extends StatefulWidget {
     bool enablePullToZoomInRecord = true,
     bool shouldDeletePreviewFile = false,
     Duration maximumRecordingDuration = const Duration(seconds: 15),
-    ThemeData? theme,
+    ThemeData theme,
     int cameraQuarterTurns = 0,
-    CameraPickerTextDelegate? textDelegate,
+    CameraPickerTextDelegate textDelegate,
     ResolutionPreset resolutionPreset = ResolutionPreset.max,
     ImageFormatGroup imageFormatGroup = ImageFormatGroup.unknown,
-    Widget Function(CameraValue)? foregroundBuilder,
-    EntitySaveCallback? onEntitySaving,
+    Widget Function(CameraValue) foregroundBuilder,
+    EntitySaveCallback onEntitySaving,
     bool useRootNavigator = true,
   }) {
     if (enableRecording != true && onlyEnableRecording == true) {
@@ -205,12 +205,12 @@ class CameraPicker extends StatefulWidget {
       ),
       buttonTheme: ButtonThemeData(buttonColor: themeColor),
       colorScheme: ColorScheme(
-        primary: Colors.grey[900]!,
-        primaryVariant: Colors.grey[900]!,
+        primary: Colors.grey[900],
+        primaryVariant: Colors.grey[900],
         secondary: themeColor,
         secondaryVariant: themeColor,
-        background: Colors.grey[900]!,
-        surface: Colors.grey[900]!,
+        background: Colors.grey[900],
+        surface: Colors.grey[900],
         brightness: Brightness.dark,
         error: const Color(0xffcf6679),
         onPrimary: Colors.black,
@@ -234,12 +234,12 @@ class CameraPickerState extends State<CameraPicker>
 
   /// The last exposure point offset on the screen.
   /// 最后一次手动聚焦的点坐标
-  final ValueNotifier<Offset?> _lastExposurePoint =
-      ValueNotifier<Offset?>(null);
+  final ValueNotifier<Offset> _lastExposurePoint =
+      ValueNotifier<Offset>(null);
 
   /// The last pressed position on the shooting button before starts recording.
   /// 在开始录像前，最后一次在拍照按钮按下的位置
-  Offset? _lastShootingButtonPressedPosition;
+  Offset _lastShootingButtonPressedPosition;
 
   /// Current exposure mode.
   /// 当前曝光模式
@@ -251,12 +251,12 @@ class CameraPickerState extends State<CameraPicker>
 
   /// The controller for the current camera.
   /// 当前相机实例的控制器
-  CameraController get controller => _controller!;
-  CameraController? _controller;
+  CameraController get controller => _controller;
+  CameraController _controller;
 
   /// Available cameras.
   /// 可用的相机实例
-  late List<CameraDescription> cameras;
+   List<CameraDescription> cameras;
 
   /// Current exposure offset.
   /// 当前曝光值
@@ -298,9 +298,9 @@ class CameraPickerState extends State<CameraPicker>
 
   /// The [Timer] for keep the [_lastExposurePoint] displays.
   /// 用于控制上次手动聚焦点显示的计时器
-  Timer? _exposurePointDisplayTimer;
+  Timer _exposurePointDisplayTimer;
 
-  Timer? _exposureModeDisplayTimer;
+  Timer _exposureModeDisplayTimer;
 
   /// The [Timer] for record start detection.
   /// 用于检测是否开始录制的计时器
@@ -309,7 +309,7 @@ class CameraPickerState extends State<CameraPicker>
   /// at the same time. When the time is more than [recordDetectDuration],
   /// which means we should start recoding, the timer finished.
   /// 当拍摄按钮开始执行动画时，定时器会同时启动。时长超过检测时长时，定时器完成。
-  Timer? _recordDetectTimer;
+  Timer _recordDetectTimer;
 
   /// The [Timer] for record countdown.
   /// 用于录制视频倒计时的计时器
@@ -318,7 +318,7 @@ class CameraPickerState extends State<CameraPicker>
   /// However, if there's no limitation on record time, this will be useless.
   /// 当录像时间达到了最大时长，将通过定时器停止录像。
   /// 但如果录像时间没有限制，定时器将不会起作用。
-  Timer? _recordCountdownTimer;
+  Timer _recordCountdownTimer;
 
   ////////////////////////////////////////////////////////////////////////////
   ////////////////////////////// Global Getters //////////////////////////////
@@ -347,7 +347,7 @@ class CameraPickerState extends State<CameraPicker>
 
   bool get shouldDeletePreviewFile => widget.shouldDeletePreviewFile;
 
-  Duration? get maximumRecordingDuration => widget.maximumRecordingDuration;
+  Duration get maximumRecordingDuration => widget.maximumRecordingDuration;
 
   /// Whether the recording restricted to a specific duration.
   /// 录像是否有限制的时长
@@ -359,8 +359,8 @@ class CameraPickerState extends State<CameraPicker>
 
   /// If there's no theme provided from the user, use [CameraPicker.themeData] .
   /// 如果用户未提供主题，
-  late final ThemeData _theme =
-      widget.theme ?? CameraPicker.themeData(C.themeColor);
+   final ThemeData _theme =
+       CameraPicker.themeData(C.themeColor);
 
   /// Get [ThemeData] of the [AssetPicker] through [Constants.pickerKey].
   /// 通过常量全局 Key 获取当前选择器的主题
@@ -424,7 +424,7 @@ class CameraPickerState extends State<CameraPicker>
   /// Adjust the proper scale type according to the [controller].
   /// 通过 [controller] 的预览大小，判断相机预览适用的缩放类型。
   _PreviewScaleType _effectiveScaleType(BoxConstraints constraints) {
-    final Size _size = controller.value.previewSize!;
+    final Size _size = controller.value.previewSize;
     final Size _scaledSize =
         _size * constraints.maxWidth * Screens.scale / _size.height;
     if (_scaledSize.width > constraints.maxHeight * Screens.scale) {
@@ -438,9 +438,9 @@ class CameraPickerState extends State<CameraPicker>
 
   /// Initialize cameras instances.
   /// 初始化相机实例
-  void initCameras([CameraDescription? cameraDescription]) {
+  void initCameras([CameraDescription cameraDescription]) {
     // Save the current controller to a local variable.
-    final CameraController? _c = _controller;
+    final CameraController _c = _controller;
     // Then unbind the controller from widgets, which requires a build frame.
     safeSetState(() {
       _maxAvailableZoom = 1;
@@ -634,14 +634,14 @@ class CameraPickerState extends State<CameraPicker>
       _exposureMode.value = ExposureMode.auto;
     }
     controller.setExposurePoint(
-      _lastExposurePoint.value!.scale(
+      _lastExposurePoint.value.scale(
         1 / constraints.maxWidth,
         1 / constraints.maxHeight,
       ),
     );
     if (controller.value.focusPointSupported == true) {
       controller.setFocusPoint(
-        _lastExposurePoint.value!.scale(
+        _lastExposurePoint.value.scale(
           1 / constraints.maxWidth,
           1 / constraints.maxHeight,
         ),
@@ -674,7 +674,7 @@ class CameraPickerState extends State<CameraPicker>
     if (controller.value.isRecordingVideo) {
       // First calculate relative offset.
       final Offset _offset =
-          event.position - _lastShootingButtonPressedPosition!;
+          event.position - _lastShootingButtonPressedPosition;
       // Then turn negative,
       // multiply double with 10 * 1.5 - 1 = 14,
       // plus 1 to ensure always scale.
@@ -696,7 +696,7 @@ class CameraPickerState extends State<CameraPicker>
       Future<void>.delayed(const Duration(milliseconds: 500), () {
         controller.dispose();
       });
-      final AssetEntity? entity = await CameraPickerViewer.pushToViewer(
+      final AssetEntity entity = await CameraPickerViewer.pushToViewer(
         context,
         pickerState: this,
         pickerType: CameraPickerViewType.image,
@@ -760,7 +760,7 @@ class CameraPickerState extends State<CameraPicker>
       controller.startVideoRecording().then((dynamic _) {
         safeSetState(() {});
         if (isRecordingRestricted) {
-          _recordCountdownTimer = Timer(maximumRecordingDuration!, () {
+          _recordCountdownTimer = Timer(maximumRecordingDuration, () {
             stopRecordingVideo();
           });
         }
@@ -790,7 +790,7 @@ class CameraPickerState extends State<CameraPicker>
 
     if (controller.value.isRecordingVideo) {
       controller.stopVideoRecording().then((XFile file) async {
-        final AssetEntity? entity = await CameraPickerViewer.pushToViewer(
+        final AssetEntity entity = await CameraPickerViewer.pushToViewer(
           context,
           pickerState: this,
           pickerType: CameraPickerViewType.video,
@@ -885,7 +885,7 @@ class CameraPickerState extends State<CameraPicker>
 
   /// Text widget for shooting tips.
   /// 拍摄的提示文字
-  Widget tipsTextWidget(CameraController? controller) {
+  Widget tipsTextWidget(CameraController controller) {
     return AnimatedOpacity(
       duration: recordDetectDuration,
       opacity: controller?.value.isRecordingVideo == true ? 0 : 1,
@@ -908,7 +908,7 @@ class CameraPickerState extends State<CameraPicker>
   /// 该区域显示在屏幕下方。
   Widget shootingActions(
     BuildContext context,
-    CameraController? controller,
+    CameraController controller,
     BoxConstraints constraints,
   ) {
     return SizedBox(
@@ -996,7 +996,7 @@ class CameraPickerState extends State<CameraPicker>
                 isInitialized: () =>
                     controller.value.isRecordingVideo && isRecordingRestricted,
                 builder: (_, __) => CircleProgressBar(
-                  duration: maximumRecordingDuration!,
+                  duration: maximumRecordingDuration,
                   outerRadius: outerSize.width,
                   ringsWidth: 2.0,
                 ),
@@ -1015,12 +1015,12 @@ class CameraPickerState extends State<CameraPicker>
     double gap,
   ) {
     final bool isLocked = mode == ExposureMode.locked;
-    final Color? color = isLocked ? _lockedColor : theme.iconTheme.color;
+    final Color color = isLocked ? _lockedColor : theme.iconTheme.color;
 
     Widget _line() {
       return ValueListenableBuilder<bool>(
         valueListenable: _isExposureModeDisplays,
-        builder: (_, bool value, Widget? child) => AnimatedOpacity(
+        builder: (_, bool value, Widget child) => AnimatedOpacity(
           duration: _kRouteDuration,
           opacity: value ? 1 : 0,
           child: child,
@@ -1099,7 +1099,7 @@ class CameraPickerState extends State<CameraPicker>
             children: <Widget>[
               ValueListenableBuilder<bool>(
                 valueListenable: _isExposureModeDisplays,
-                builder: (_, bool value, Widget? child) => AnimatedOpacity(
+                builder: (_, bool value, Widget child) => AnimatedOpacity(
                   duration: _kRouteDuration,
                   opacity: value ? 1 : 0,
                   child: child,
@@ -1158,7 +1158,7 @@ class CameraPickerState extends State<CameraPicker>
             ExposurePointWidget(
               key: ValueKey<int>(currentTimeStamp),
               size: _pointWidth,
-              color: theme.iconTheme.color!,
+              color: theme.iconTheme.color,
             ),
             if (enableExposureControlOnPoint) const SizedBox(width: 2),
             if (enableExposureControlOnPoint)
@@ -1171,9 +1171,9 @@ class CameraPickerState extends State<CameraPicker>
       );
     }
 
-    return ValueListenableBuilder<Offset?>(
+    return ValueListenableBuilder<Offset>(
       valueListenable: _lastExposurePoint,
-      builder: (_, Offset? point, __) {
+      builder: (_, Offset point, __) {
         if (point == null) {
           return const SizedBox.shrink();
         }
@@ -1199,8 +1199,8 @@ class CameraPickerState extends State<CameraPicker>
 
   Widget _cameraPreview(
     BuildContext context, {
-    required DeviceOrientation orientation,
-    required BoxConstraints constraints,
+     DeviceOrientation orientation,
+     BoxConstraints constraints,
   }) {
     Widget _preview = Listener(
       onPointerDown: (_) => _pointers++,
@@ -1267,14 +1267,14 @@ class CameraPickerState extends State<CameraPicker>
   }
 
   Widget _initializeWrapper({
-    required Widget Function(CameraValue, Widget?) builder,
-    bool Function()? isInitialized,
-    Widget? child,
+     Widget Function(CameraValue, Widget) builder,
+    bool Function() isInitialized,
+    Widget child,
   }) {
     if (_controller != null) {
       return ValueListenableBuilder<CameraValue>(
         valueListenable: controller,
-        builder: (_, CameraValue value, Widget? w) {
+        builder: (_, CameraValue value, Widget w) {
           return isInitialized?.call() ?? value.isInitialized
               ? builder(value, w)
               : const SizedBox.shrink();
@@ -1286,9 +1286,9 @@ class CameraPickerState extends State<CameraPicker>
   }
 
   Widget _cameraBuilder({
-    required BuildContext context,
-    required CameraValue value,
-    required BoxConstraints constraints,
+     BuildContext context,
+     CameraValue value,
+     BoxConstraints constraints,
   }) {
     return AspectRatio(
       aspectRatio: value.aspectRatio,
@@ -1303,7 +1303,7 @@ class CameraPickerState extends State<CameraPicker>
               ),
             ),
             if (widget.foregroundBuilder != null)
-              Positioned.fill(child: widget.foregroundBuilder!(value)),
+              Positioned.fill(child: widget.foregroundBuilder(value)),
           ],
         ),
       ),
